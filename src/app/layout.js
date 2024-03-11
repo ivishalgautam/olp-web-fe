@@ -1,10 +1,10 @@
-import { Inter } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import Header from "@/components/Header";
 import QueryProvider from "@/components/QueryClientProvider";
 import Footer from "@/components/Footer";
-
-const inter = Inter({ subsets: ["latin"] });
+import { Toaster } from "sonner";
+import Context from "@/store/context";
 
 export const metadata = {
   title: "Create Next App",
@@ -14,14 +14,21 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className}`}>
-        <QueryProvider>
-          <Header />
-          <main className="h-screen">
-            {children}
-            <Footer />
-          </main>
-        </QueryProvider>
+      <body
+        className={`${GeistSans.className} overflow-x-hidden`}
+        suppressHydrationWarning={true}
+      >
+        <Context>
+          <Toaster richColors />
+
+          <QueryProvider>
+            <Header />
+            <main className="h-screen">
+              {children}
+              <Footer />
+            </main>
+          </QueryProvider>
+        </Context>
       </body>
     </html>
   );

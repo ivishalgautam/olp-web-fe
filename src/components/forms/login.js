@@ -13,6 +13,7 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useRouter } from "next/navigation";
 import { isObject } from "@/utils/object";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
@@ -39,9 +40,9 @@ export default function LoginForm() {
     } catch (error) {
       console.log(error);
       if (isObject(error)) {
-        toast.error(error.message);
+        return toast.error(error.message);
       } else {
-        toast.error("Unable to complete your request.");
+        return toast.error("Unable to complete your request.");
       }
     } finally {
       setLoading(false);
@@ -49,7 +50,6 @@ export default function LoginForm() {
   }
 
   const onSubmit = async (data) => {
-    console.log({ data });
     await loginUser(data);
   };
   return (
@@ -103,7 +103,6 @@ export default function LoginForm() {
 
                 <div>
                   <Button className="rounded-full px-12 py-6">
-                    {" "}
                     {loading && (
                       <span className="mr-3 h-5 w-5 animate-spin rounded-full border-4 border-white/30 border-t-white"></span>
                     )}
@@ -115,7 +114,7 @@ export default function LoginForm() {
                   <P
                     className={"text-center text-sm font-medium tracking-wide"}
                   >
-                    Don't have an account?{" "}
+                    Do not have an account?{" "}
                     <Link href={"#"} className="text-primary">
                       Create one
                     </Link>

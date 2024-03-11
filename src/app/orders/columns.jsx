@@ -33,23 +33,6 @@ export const columns = () => [
     },
   },
   {
-    accessorKey: "customer_name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Customer name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-    cell: ({ row }) => {
-      return <div className={`capitalize`}>{row.original.customer_name}</div>;
-    },
-  },
-  {
     accessorKey: "status",
     header: ({ column }) => {
       console.log({ column });

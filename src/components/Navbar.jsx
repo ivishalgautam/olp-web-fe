@@ -1,49 +1,45 @@
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { LuBarChartHorizontal } from "react-icons/lu";
 import { IoIosArrowDown } from "react-icons/io";
-import { MdOutlineLocalPhone } from "react-icons/md";
-import { redirect } from "next/dist/server/api-utils";
+import { MdOutlineLocalPhone, MdOutlineShoppingCart } from "react-icons/md";
+import { redirect, useRouter } from "next/navigation";
+import { FaBars } from "react-icons/fa6";
+import { RiUser3Line } from "react-icons/ri";
+import { Button } from "./ui/button";
+import MobileNavigation from "./mobile-navigation";
+import BrowseCategory from "./browse-category";
 
-const navList = [
+export const navList = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
   { title: "Products", href: "/products" },
   { title: "Contact", href: "/contact" },
 ];
 
-export const logout = () => {
+export function logout() {
   if (typeof window !== "undefined") {
     localStorage.clear();
+    // window.location.href = "/login";
   }
-  redirect("/signin");
-};
+}
 
 export default function Navbar() {
-  const [isCategory, setIsCategory] = useState(false);
+  const [mobileNavActive, setMobileNavActive] = useState(false);
 
   return (
-    <div className="flex h-16 items-center justify-center bg-primary">
+    <div className="flex items-center justify-center overflow-x-hidden bg-primary md:h-16">
       <div className="container">
         <div className="flex items-center justify-between">
-          <div className="relative">
-            <button
-              className="flex items-center justify-center gap-2 text-white"
-              onClick={() => setIsCategory(!isCategory)}
-            >
-              <LuBarChartHorizontal size={25} />
-              <span>Browse categories</span>
-              <IoIosArrowDown
-                size={25}
-                className={isCategory && "rotate-180"}
-              />
-            </button>
-            <div
-              className={`absolute h-16 w-full bg-black ${isCategory ? "opacity-100" : "opacity-0"} mt-4 transition-all`}
-            ></div>
+          <div className="p-4 md:hidden">
+            <Image width={100} height={100} src={"/logo.png"} alt="logo" />
           </div>
-          <nav>
+          <div className="hidden md:block">
+            <BrowseCategory />
+          </div>
+          <nav className="hidden md:block">
             <ul className="flex gap-8">
               {navList.map(({ title, href }) => (
                 <li key={title}>
@@ -57,14 +53,42 @@ export default function Navbar() {
               ))}
             </ul>
           </nav>
-          <div>
+          <div className="hidden md:block">
             <button className="flex items-center justify-center gap-2 text-white">
               <MdOutlineLocalPhone />
               <span className="text-sm">Whatsapp</span>
               <span className="text-lg font-bold">+91 9811632400</span>
             </button>
           </div>
+          <div className="flex items-center justify-end gap-2 md:hidden">
+            <div className="flex items-center justify-center">
+              <Link
+                href={"/cart"}
+                className="inline-block rounded-sm p-2 transition-colors hover:bg-black/10"
+              >
+                <MdOutlineShoppingCart size={25} fill="#fff" />
+              </Link>
+              <Link
+                href={"/customer/overview"}
+                className="inline-block rounded-sm p-2 transition-colors hover:bg-black/10"
+              >
+                <RiUser3Line size={25} fill="#fff" />
+              </Link>
+            </div>
+            <Button
+              size="icon"
+              className="inline-block rounded-sm p-2 transition-colors hover:bg-black/10"
+              onClick={() => setMobileNavActive(true)}
+            >
+              <FaBars fill="#fff" size={25} />
+            </Button>
+          </div>
         </div>
+      </div>
+      <div
+        className={`absolute top-0 z-50 transition-all duration-500 ${mobileNavActive ? "right-0" : "-right-[25rem]"}`}
+      >
+        <MobileNavigation setMobileNavActive={setMobileNavActive} />
       </div>
     </div>
   );

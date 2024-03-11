@@ -19,6 +19,9 @@ export const endpoints = {
   categories: {
     getAll: "/categories",
   },
+  brands: {
+    getAll: "/",
+  },
   banners: {
     getAll: "/banners",
   },
@@ -35,5 +38,8 @@ export const endpoints = {
   },
   orders: {
     getAll: "/orders",
+  },
+  queries: {
+    getAll: "/queries",
   },
 };

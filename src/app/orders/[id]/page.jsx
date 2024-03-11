@@ -107,7 +107,7 @@ export default function Page({ params: { id } }) {
       </Table>
 
       <div className="my-8">
-        <H2>{data?.status.split("_").join(" ")}</H2>
+        <H2>{data?.status?.split("_").join(" ")}</H2>
       </div>
     </div>
   );

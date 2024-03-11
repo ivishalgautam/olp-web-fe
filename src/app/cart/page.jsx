@@ -82,7 +82,8 @@ export default function Page() {
   };
 
   useEffect(() => {
-    data?.data?.map((prd) =>
+    remove();
+    data?.map((prd) =>
       append({
         _id: prd.id,
         product_id: prd.product_id,
@@ -164,9 +165,7 @@ export default function Page() {
           </Table>
           {fields?.length > 0 && (
             <div className="text-end">
-              <Button type="submit" variant="primary">
-                Submit query
-              </Button>
+              <Button type="submit">Submit query</Button>
             </div>
           )}
         </form>
