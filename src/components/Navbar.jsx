@@ -2,35 +2,46 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { LuBarChartHorizontal } from "react-icons/lu";
-import { IoIosArrowDown } from "react-icons/io";
 import { MdOutlineLocalPhone, MdOutlineShoppingCart } from "react-icons/md";
-import { redirect, useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { FaBars } from "react-icons/fa6";
 import { RiUser3Line } from "react-icons/ri";
 import { Button } from "./ui/button";
 import MobileNavigation from "./mobile-navigation";
 import BrowseCategory from "./browse-category";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
 
 export const navList = [
   { title: "Home", href: "/" },
   { title: "About", href: "/about" },
-  { title: "Products", href: "/products" },
+  { title: "Products", href: "/products?page=1" },
   { title: "Contact", href: "/contact" },
 ];
+
+const fetchTempCart = () => {
+  return http().get(endpoints.cart.temp);
+};
 
 export function logout() {
   if (typeof window !== "undefined") {
     localStorage.clear();
-    // window.location.href = "/login";
+    window.location.href = "/login";
   }
+  redirect("/login");
 }
 
 export default function Navbar() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
+  const { data, isFetching } = useQuery({
+    queryFn: fetchTempCart,
+    queryKey: ["cart"],
+  });
+  console.log({ cart: data });
 
   return (
-    <div className="flex items-center justify-center overflow-x-hidden bg-primary md:h-16">
+    <div className="flex items-center justify-center bg-primary md:h-16">
       <div className="container">
         <div className="flex items-center justify-between">
           <div className="p-4 md:hidden">
@@ -66,6 +77,7 @@ export default function Navbar() {
                 href={"/cart"}
                 className="inline-block rounded-sm p-2 transition-colors hover:bg-black/10"
               >
+                <span>{data?.length}</span>
                 <MdOutlineShoppingCart size={25} fill="#fff" />
               </Link>
               <Link

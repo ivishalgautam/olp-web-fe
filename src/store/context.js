@@ -22,7 +22,7 @@ function Context({ children }) {
           console.log(error);
         });
     }
-    if (!["/signin", "/signup"].includes(pathname)) fetchData();
+    if (!["/login", "/signup"].includes(pathname)) fetchData();
   }, [pathname]);
 
   return (

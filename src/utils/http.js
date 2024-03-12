@@ -69,7 +69,7 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
     if (error.response?.status === 403) {
       // Handle forbidden access cases
       console.log("Forbidden access:", error.response.data?.message);
-      typeof logout === "function" && logout();
+      // typeof logout === "function" && logout();
     }
 
     if (error.response?.status !== 500) {

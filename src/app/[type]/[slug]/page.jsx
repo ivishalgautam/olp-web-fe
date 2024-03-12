@@ -1,6 +1,8 @@
+import PaginationControls from "@/components/PaginationControls";
 import ProductCard from "@/components/cards/product";
 import SidebarBrands from "@/components/layout/sidebar-brands";
 import SidebarCategories from "@/components/layout/sidebar-categories";
+import ProductsWithFilter from "@/components/products-with-filter";
 import { P } from "@/components/ui/typography";
 import { fetchProducts } from "@/utils/api";
 
@@ -14,7 +16,7 @@ export default async function Page({
     currPage ? currPage : 1,
   );
 
-  // console.log({ data });
+  console.log({ data });
 
   return (
     <section>
@@ -27,20 +29,12 @@ export default async function Page({
             </div>
           </div>
 
-          <div className="col-span-9">
-            <div className="grid grid-cols-4">
-              {data?.length === 0 && (
-                <P className={"col-span-4 text-center"}>No products found!</P>
-              )}
-              {data?.map(({ id, pictures, title, slug }) => (
-                <ProductCard
-                  key={id}
-                  image={pictures[0]}
-                  title={title}
-                  id={id}
-                  slug={slug}
-                />
-              ))}
+          <div className="relative col-span-9">
+            <div>
+              <ProductsWithFilter data={data} />
+            </div>
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
+              <PaginationControls total_page={total_page} />
             </div>
           </div>
         </div>

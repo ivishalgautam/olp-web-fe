@@ -52,12 +52,11 @@ export default function Page() {
     queryKey: ["cart"],
   });
 
-  console.log({ data });
-
   const createMutation = useMutation(createOrder, {
     onSuccess: (data) => {
       toast.success(data.message);
       remove();
+      queryClient.invalidateQueries("cart");
     },
     onError: (error) => {
       console.log({ error });
@@ -70,6 +69,7 @@ export default function Page() {
       const index = fields.findIndex((so) => so._id === data.data.id);
       remove(index);
       toast.success(data.message);
+      queryClient.invalidateQueries("cart");
     },
     onError: (error) => {
       toast.error(error.message);

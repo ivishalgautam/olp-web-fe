@@ -8,11 +8,22 @@ import { FiUser } from "react-icons/fi";
 import { FaPhone } from "react-icons/fa6";
 import Navbar from "./Navbar";
 import { MainContext } from "@/store/context";
-import { Input } from "./ui/input";
 import Search from "./Search";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import { useQuery } from "@tanstack/react-query";
+
+const fetchTempCart = () => {
+  return http().get(endpoints.cart.temp);
+};
 
 export default function Header() {
   const { user } = useContext(MainContext);
+  const { data, isFetching } = useQuery({
+    queryFn: fetchTempCart,
+    queryKey: ["cart"],
+  });
+  console.log({ cart: data });
 
   return (
     <header className="">
@@ -63,7 +74,10 @@ export default function Header() {
           </div>
 
           <div className="flex items-center justify-center gap-4">
-            <Link href={"/cart"}>
+            <Link href={"/cart"} className="relative">
+              <span className="absolute -right-4 -top-4 flex size-6 items-center justify-center rounded-full bg-primary text-sm text-white">
+                {data?.length}
+              </span>
               <MdOutlineShoppingCart size={30} />
             </Link>
             <Link href={"/customer/overview"}>

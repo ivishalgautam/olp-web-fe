@@ -35,8 +35,6 @@ export default function ContactForm() {
 
   const className = "bg-gray-100 rounded-[60px] p-6 py-5.5";
 
-  console.log({ errors });
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

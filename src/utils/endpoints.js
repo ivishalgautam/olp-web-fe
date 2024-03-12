@@ -39,6 +39,9 @@ export const endpoints = {
   orders: {
     getAll: "/orders",
   },
+  enquiries: {
+    getAll: "/enquiries",
+  },
   queries: {
     getAll: "/queries",
   },

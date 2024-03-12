@@ -6,7 +6,7 @@ import { Button } from "../ui/button";
 import { IoBagHandleOutline } from "react-icons/io5";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { MainContext } from "@/store/context";
 import Link from "next/link";
@@ -17,9 +17,11 @@ const addToCart = (data) => {
 
 export default function ProductCard({ id, slug, title, image }) {
   const { user } = useContext(MainContext);
+  const queryClient = useQueryClient();
   const createMutation = useMutation(addToCart, {
     onSuccess: (data) => {
       toast.success(data.message);
+      queryClient.invalidateQueries("cart");
     },
     onError: (error) => {
       toast.error(error.message);

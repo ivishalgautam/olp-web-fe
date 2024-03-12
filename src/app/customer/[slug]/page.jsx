@@ -5,7 +5,7 @@ import React, { useContext } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { H4, H6, Small } from "@/components/ui/typography";
-import { IoBagHandleOutline } from "react-icons/io5";
+import { IoBagHandleOutline, IoCartOutline } from "react-icons/io5";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { IoKeyOutline } from "react-icons/io5";
 import { CiLogout } from "react-icons/ci";
@@ -16,6 +16,7 @@ import Orders from "@/app/orders/page";
 import ChangePasswordForm from "@/components/forms/change-password";
 import { logout } from "@/components/Navbar";
 import Overview from "@/components/Overview";
+import Enquiries from "@/app/enquiries/page";
 
 export default function Page({ params: { slug } }) {
   const { user } = useContext(MainContext);
@@ -32,6 +33,11 @@ export default function Page({ params: { slug } }) {
           <div className="col-span-3">
             {slug === "overview" && <Overview />}
             {slug === "enquiry-product" && (
+              <div className="rounded-lg border p-4">
+                <H4>Enquiries</H4> <Enquiries />
+              </div>
+            )}
+            {slug === "orders" && (
               <div className="rounded-lg border p-4">
                 <H4>Orders</H4> <Orders />
               </div>
@@ -51,6 +57,11 @@ export function Sidebar({ image_url, first_name, last_name, email, slug }) {
       title: "Enquiry product",
       href: "enquiry-product",
       icon: <IoBagHandleOutline size={18} />,
+    },
+    {
+      title: "Orders",
+      href: "orders",
+      icon: <IoCartOutline size={18} />,
     },
     {
       title: "Profile",
