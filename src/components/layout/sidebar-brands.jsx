@@ -36,7 +36,7 @@ export default function SidebarBrands() {
               className="h-8 animate-pulse rounded-lg bg-gray-200 py-2"
             ></li>
           ))}
-        {data?.map(({ name, slug, id }) => (
+        {data?.data?.map(({ name, slug, id }) => (
           <li
             key={id}
             className={cn(`py-2 text-sm font-medium capitalize`, {

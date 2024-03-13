@@ -85,7 +85,7 @@ export default function Page({ params: { id } }) {
 
   useEffect(() => {
     const fetchData = async (id) => {
-      const data = await http().get(
+      const { data } = await http().get(
         `${endpoints.enquiries.getAll}/getByEnquiryId/${id}`,
       );
       remove();

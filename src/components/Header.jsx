@@ -23,7 +23,6 @@ export default function Header() {
     queryFn: fetchTempCart,
     queryKey: ["cart"],
   });
-  console.log({ cart: data });
 
   return (
     <header className="">
@@ -75,9 +74,13 @@ export default function Header() {
 
           <div className="flex items-center justify-center gap-4">
             <Link href={"/cart"} className="relative">
-              <span className="absolute -right-4 -top-4 flex size-6 items-center justify-center rounded-full bg-primary text-sm text-white">
-                {data?.length}
-              </span>
+              {data?.length ? (
+                <span className="absolute -right-4 -top-4 flex size-6 items-center justify-center rounded-full bg-primary text-sm text-white">
+                  {data?.length}
+                </span>
+              ) : (
+                <></>
+              )}
               <MdOutlineShoppingCart size={30} />
             </Link>
             <Link href={"/customer/overview"}>

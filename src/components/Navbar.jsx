@@ -38,7 +38,6 @@ export default function Navbar() {
     queryFn: fetchTempCart,
     queryKey: ["cart"],
   });
-  console.log({ cart: data });
 
   return (
     <div className="flex items-center justify-center bg-primary md:h-16">

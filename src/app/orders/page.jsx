@@ -26,7 +26,7 @@ export default function Orders() {
 
   return (
     <div className="container mx-auto rounded-lg border-input bg-white p-8">
-      <DataTable columns={columns()} data={data} />
+      <DataTable columns={columns()} data={data?.data} />
     </div>
   );
 }

@@ -60,7 +60,7 @@ export default function FeaturedCategories() {
             // onSwiper={(swiper) => console.log(swiper)}
             breakpoints={breakpoints}
           >
-            {data?.map(({ id, slug, name, image }) => (
+            {data?.data?.map(({ id, slug, name, image }) => (
               <SwiperSlide key={id}>
                 <CategoryCard slug={slug} name={name} image={image} />
               </SwiperSlide>

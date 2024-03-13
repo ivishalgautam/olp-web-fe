@@ -83,7 +83,7 @@ export default function Page() {
 
   useEffect(() => {
     remove();
-    data?.map((prd) =>
+    data?.data?.map((prd) =>
       append({
         _id: prd.id,
         product_id: prd.product_id,
@@ -101,8 +101,6 @@ export default function Page() {
   async function handleCreate(data) {
     createMutation.mutate(data);
   }
-
-  console.log(errors);
 
   return (
     <section className="rounded-md bg-white p-4">

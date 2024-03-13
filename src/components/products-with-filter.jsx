@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ProductCard from "./cards/product";
 import { H5, P } from "./ui/typography";
 import { Button } from "./ui/button";
@@ -17,49 +17,73 @@ import {
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
 import { useFetchBrands } from "@/hooks/useFetchBrands";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useForm, Controller } from "react-hook-form";
 
 export default function ProductsWithFilter({ data }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [isFilter, setIsFilter] = useState(false);
-  const [categoryIds, setCategoryIds] = useState([]);
-  const [brandIds, setBrandIds] = useState([]);
-  const [partType, setPartType] = useState("");
-
-  const filteredData =
-    !categoryIds.length && !brandIds.length && !partType
-      ? data
-      : data?.filter(
-          (item) =>
-            categoryIds.includes(item.category_id) &&
-            brandIds.includes(item.brand_id) &&
-            item.type === partType,
-        );
-  console.log({ filteredData });
-
+  const [categorySlugs, setCategorySlugs] = useState([]);
+  const [brandSlugs, setBrandSlugs] = useState([]);
+  const { register, watch, control, setValue, getValues } = useForm();
   const { data: categories } = useFetchCategories();
   const { data: brands } = useFetchBrands();
 
-  const handleCheckChange = (type, check, id) => {
+  const handleCheckChange = (type, check, slug) => {
     if (type === "brand") {
       check
-        ? setBrandIds((prev) => [...prev, id])
-        : setBrandIds((prev) => prev.filter((item) => item !== id));
+        ? setBrandSlugs((prev) => [...prev, slug])
+        : setBrandSlugs((prev) => prev?.filter((item) => item !== slug));
     } else {
       check
-        ? setCategoryIds((prev) => [...prev, id])
-        : setCategoryIds((prev) => prev.filter((item) => item !== id));
+        ? setCategorySlugs((prev) => [...prev, slug])
+        : setCategorySlugs((prev) => prev?.filter((item) => item !== slug));
     }
   };
 
-  const handlePartChange = (part) => {
-    setPartType(part);
+  const handleFilter = () => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    getValues("part")
+      ? params.set("part", getValues("part"))
+      : params.delete("part");
+
+    categorySlugs.length
+      ? params.set("categories", categorySlugs.join("_"))
+      : params.delete("categories");
+
+    brandSlugs.length
+      ? params.set("brands", brandSlugs.join("_"))
+      : params.delete("brands");
+
+    router.push(`?${params.toString()}`);
+    setIsFilter(false);
   };
+
+  useEffect(() => {
+    setValue("part", searchParams.get("part"));
+    setCategorySlugs(searchParams.get("categories")?.split("_") ?? []);
+    setBrandSlugs(searchParams.get("brands")?.split("_") ?? []);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (watch("part") !== "oem") {
+      setCategorySlugs([]);
+      setBrandSlugs([]);
+    }
+  }, [watch("part")]);
 
   return (
     <div className="space-y-2">
       <div className="space-y-2">
-        <div>
-          <Button onClick={() => setIsFilter(!isFilter)}>Filter</Button>
-        </div>
+        <Button
+          onClick={() => setIsFilter(!isFilter)}
+          className="cursor-pointer"
+        >
+          Filter
+        </Button>
+
         <div
           className={cn(
             "h-0 overflow-hidden rounded-md shadow-lg transition-all",
@@ -68,80 +92,96 @@ export default function ProductsWithFilter({ data }) {
             },
           )}
         >
-          <div className="grid grid-cols-3">
-            {/* by part type */}
-            <div className="space-y-2">
-              <H5>By part type</H5>
-              <div>
-                <Select onValueChange={handlePartChange}>
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select part type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectLabel>Part type</SelectLabel>
-                      <SelectItem value="aftermarket">Aftermarket</SelectItem>
-                      <SelectItem value="oem">OEM</SelectItem>
-                      <SelectItem value="genuine">Genuine</SelectItem>
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
+          <div className="space-y-4">
+            <div className="grid grid-cols-3">
+              {/* by part type */}
+              <div className="space-y-2">
+                <H5>By part type</H5>
+                <div>
+                  <Controller
+                    control={control}
+                    name="part"
+                    render={({ field }) => (
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select part type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectGroup>
+                            <SelectLabel>Part type</SelectLabel>
+                            <SelectItem value="aftermarket">
+                              Aftermarket
+                            </SelectItem>
+                            <SelectItem value="oem">OEM</SelectItem>
+                            <SelectItem value="genuine">Genuine</SelectItem>
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </div>
               </div>
+
+              {/* by categories */}
+              {watch("part") === "oem" && (
+                <div className="space-y-2">
+                  <H5>By Categories</H5>
+                  <div className="space-y-2">
+                    {categories?.map(({ id, name, slug }) => (
+                      <div
+                        key={id}
+                        className="flex items-center justify-start gap-1"
+                      >
+                        <Checkbox
+                          onCheckedChange={(check) =>
+                            handleCheckChange("category", check, slug)
+                          }
+                          checked={categorySlugs?.includes(slug)}
+                        />
+                        <Label className="capitalize">{name}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* by brands */}
+              {watch("part") === "oem" && (
+                <div className="space-y-2">
+                  <H5>By Brands</H5>
+                  <div className="space-y-2">
+                    {brands?.map(({ id, name, slug }) => (
+                      <div
+                        key={id}
+                        className="flex items-center justify-start gap-1"
+                      >
+                        <Checkbox
+                          onCheckedChange={(check) =>
+                            handleCheckChange("brand", check, slug)
+                          }
+                          checked={brandSlugs?.includes(slug)}
+                        />
+                        <Label className="capitalize">{name}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-
-            {/* by categories */}
-            {partType === "oem" && (
-              <div className="space-y-2">
-                <H5>By Categories</H5>
-                <div className="space-y-2">
-                  {categories?.map(({ id, name }) => (
-                    <div
-                      key={id}
-                      className="flex items-center justify-start gap-1"
-                    >
-                      <Checkbox
-                        onCheckedChange={(check) =>
-                          handleCheckChange("category", check, id)
-                        }
-                      />
-                      <Label className="capitalize">{name}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* by brands */}
-            {partType === "oem" && (
-              <div className="space-y-2">
-                <H5>By Brands</H5>
-                <div className="space-y-2">
-                  {brands?.map(({ id, name }) => (
-                    <div
-                      key={id}
-                      className="flex items-center justify-start gap-1"
-                    >
-                      <Checkbox
-                        onCheckedChange={(check) =>
-                          handleCheckChange("brand", check, id)
-                        }
-                      />
-                      <Label className="capitalize">{name}</Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <Button onClick={handleFilter}>Filter</Button>
           </div>
         </div>
       </div>
 
       {/* products */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-        {filteredData?.length === 0 && (
+        {data?.length === 0 && (
           <P className={"col-span-4 text-center"}>No products found!</P>
         )}
-        {filteredData?.map(({ id, pictures, title, slug }) => (
+        {data?.map(({ id, pictures, title, slug }) => (
           <ProductCard
             key={id}
             image={pictures[0]}

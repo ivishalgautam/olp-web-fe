@@ -1,5 +1,5 @@
 "use client";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "./ui/button";
 
 export default function PaginationControls({ total_page }) {
@@ -10,20 +10,29 @@ export default function PaginationControls({ total_page }) {
       ? Number(searchParams.get("page"))
       : 1;
 
+  const handlePageChange = (page) => {
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+    params.set("page", Math.max(1, page));
+    router.push(`?${params.toString()}`);
+  };
+
   return (
-    <div className="space-x-4">
-      <Button
-        onClick={() => router.push(`?page=${Number(page) - 1}`)}
-        disabled={page === 1}
-      >
-        Prev
-      </Button>
-      <Button
-        disabled={total_page === page}
-        onClick={() => router.push(`?page=${Number(page) + 1}`)}
-      >
-        Next
-      </Button>
-    </div>
+    total_page > 1 && (
+      <div className="space-x-4">
+        <Button
+          onClick={() => handlePageChange(Number(searchParams.get("page")) - 1)}
+          disabled={page === 1}
+        >
+          Prev
+        </Button>
+        <Button
+          disabled={total_page === page}
+          onClick={() => handlePageChange(Number(searchParams.get("page")) + 1)}
+        >
+          Next
+        </Button>
+      </div>
+    )
   );
 }

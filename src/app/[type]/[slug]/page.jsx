@@ -1,23 +1,16 @@
 import PaginationControls from "@/components/PaginationControls";
+import AllProducts from "@/components/all-products";
 import ProductCard from "@/components/cards/product";
 import SidebarBrands from "@/components/layout/sidebar-brands";
 import SidebarCategories from "@/components/layout/sidebar-categories";
-import ProductsWithFilter from "@/components/products-with-filter";
-import { P } from "@/components/ui/typography";
 import { fetchProducts } from "@/utils/api";
 
 export default async function Page({
   params: { type, slug },
   searchParams: { page: currPage, limit },
 }) {
-  const { page, total_page, data } = await fetchProducts(
-    type,
-    slug,
-    currPage ? currPage : 1,
-  );
-
+  const data = await fetchProducts(type, slug, currPage ? currPage : 1, limit);
   console.log({ data });
-
   return (
     <section>
       <div className="container mx-auto">
@@ -30,11 +23,18 @@ export default async function Page({
           </div>
 
           <div className="relative col-span-9">
-            <div>
-              <ProductsWithFilter data={data} />
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+              {data?.data?.map(({ id, pictures, slug, title }) => (
+                <ProductCard
+                  key={id}
+                  image={pictures[0]}
+                  slug={slug}
+                  title={title}
+                />
+              ))}
             </div>
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2">
-              <PaginationControls total_page={total_page} />
+              <PaginationControls total_page={data?.total_page} />
             </div>
           </div>
         </div>

@@ -6,6 +6,7 @@ const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
 // fetch all product by category or brand
 export async function fetchProducts(type, slug, page, limit = 10) {
+  // console.log({ type, slug, page, limit });
   const { data } = await axios.get(
     `${baseUrl}${endpoints.products.getAll}/${type === "categories" ? "getByCategory" : "getByBrand"}/${slug}?page=${page}&limit=${limit}`,
   );

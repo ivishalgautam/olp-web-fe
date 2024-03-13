@@ -8,7 +8,7 @@ import { fetchProduct } from "@/utils/api";
 
 export default async function Page({ params: { slug } }) {
   const { data } = await fetchProduct(slug);
-  console.log({ data });
+  console.log(data.related_products);
   return (
     <section className="py-14">
       <div className="container space-y-10">

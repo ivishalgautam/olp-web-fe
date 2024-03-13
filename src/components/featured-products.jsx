@@ -26,11 +26,11 @@ export default function FeaturedProducts() {
           <span className="border-b-2 border-primary py-3">Featured </span>
           products
         </H3>
-        <div className="grid grid-cols-6">
-          {!data?.length ? (
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:grid-cols-6">
+          {!data?.data?.length ? (
             <P>Not found!</P>
           ) : (
-            data?.map(({ id, title, pictures, slug }) => (
+            data?.data?.map(({ id, title, pictures, slug }) => (
               <ProductCard
                 key={id}
                 title={title}

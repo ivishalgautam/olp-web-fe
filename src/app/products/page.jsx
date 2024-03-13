@@ -10,21 +10,38 @@ import { useQuery } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 
-const fetchProducts = async (page, limit) => {
-  return await http().get(
-    `${endpoints.products.getAll}${page ? `?page=${page}` : ""}${limit ? `&limit=${limit}` : ""}`,
-  );
+const fetchProducts = async (page = 1, limit, categories, brands, part) => {
+  const urlParams = new URLSearchParams();
+
+  if (part) {
+    urlParams.append("type", part);
+  }
+  if (categories) {
+    urlParams.append("categories", categories);
+  }
+  if (brands) {
+    urlParams.append("brands", brands);
+  }
+  if (page) {
+    urlParams.append("page", Math.max(1, page));
+  }
+  if (limit) {
+    urlParams.append("limit", limit);
+  }
+
+  const url = `${endpoints.products.getAll}?${urlParams.toString()}`;
+  return await http().get(url);
 };
 
-export default function Page({ searchParams: { page: currPage, limit } }) {
-  console.log({ currPage, limit });
+export default function Page({
+  searchParams: { page: currPage, limit, categories, brands, part },
+}) {
   const { user } = useContext(MainContext);
 
-  const { data, page, total_page } = useQuery({
-    queryKey: ["products", currPage, limit],
-    queryFn: () => fetchProducts(currPage, limit),
+  const { data } = useQuery({
+    queryKey: ["products", currPage, limit, categories, brands, part],
+    queryFn: () => fetchProducts(currPage, limit, categories, brands, part),
   });
-
   return (
     <section className="py-6">
       <div className="container">
@@ -32,7 +49,7 @@ export default function Page({ searchParams: { page: currPage, limit } }) {
           <ProductsWithFilter data={data?.data} />
         </div>
         <div>
-          <PaginationControls total_page={total_page} />
+          <PaginationControls total_page={data?.total_page} />
         </div>
       </div>
     </section>
