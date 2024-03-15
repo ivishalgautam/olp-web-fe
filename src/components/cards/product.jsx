@@ -31,6 +31,7 @@ export default function ProductCard({ id, slug, title, image }) {
 
   const handleAddTocart = async (id) => {
     if (!user) return toast.warning("Please login first");
+    if (!user.is_verified) return toast.warning("You are not verified!");
     createMutation.mutate({ product_id: id });
   };
 

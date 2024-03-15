@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
@@ -28,6 +28,7 @@ import { Small } from "@/components/ui/typography";
 import { MdDelete } from "react-icons/md";
 import { endpoints } from "../../../utils/endpoints";
 import { useRouter } from "next/navigation";
+import Spinner from "@/components/Spinner";
 
 const updateEnquiry = (data) => {
   return http().put(`${endpoints.enquiries.getAll}/${data.order_id}`, data);
@@ -37,7 +38,8 @@ const deleteOrderItem = ({ id }) => {
   return http().delete(`${endpoints.enquiries.getAll}/order-items/${id}`);
 };
 
-export default function Page({ params: { id } }) {
+export default function Page({ params: { slug } }) {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     control,
     handleSubmit,
@@ -85,30 +87,37 @@ export default function Page({ params: { id } }) {
 
   useEffect(() => {
     const fetchData = async (id) => {
-      const { data } = await http().get(
-        `${endpoints.enquiries.getAll}/getByEnquiryId/${id}`,
-      );
-      remove();
-      data && setValue("status", data.status);
-      data && setValue("enquiry_status", data.enquiry_status);
-      data && setValue("order_type", data.order_type);
-      data &&
-        data?.items?.map((ord) =>
-          append({
-            _id: ord.id,
-            image: ord.pictures[0],
-            title: ord.title,
-            quantity: ord.quantity,
-            dispatched_quantity: ord.dispatched_quantity,
-            enquiry_status: ord.enquiry_status,
-            available_quantity: ord.available_quantity,
-            comment: ord.comment,
-          }),
+      try {
+        setIsLoading(true);
+        const { data } = await http().get(
+          `${endpoints.enquiries.getAll}/getByEnquiryId/${id}`,
         );
+        remove();
+        data && setValue("status", data.status);
+        data && setValue("enquiry_status", data.enquiry_status);
+        data && setValue("order_type", data.order_type);
+        data &&
+          data?.items?.map((ord) =>
+            append({
+              _id: ord.id,
+              image: ord.pictures[0],
+              title: ord.title,
+              quantity: ord.quantity,
+              dispatched_quantity: ord.dispatched_quantity,
+              enquiry_status: ord.enquiry_status,
+              available_quantity: ord.available_quantity,
+              comment: ord.comment,
+            }),
+          );
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchData(id);
-  }, [id]);
+    fetchData(slug);
+  }, [slug]);
 
   const onSubmit = (data) => {
     const payload = {
@@ -132,13 +141,16 @@ export default function Page({ params: { id } }) {
     updateMutation.mutate({ ...data, order_id: id });
   }
 
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <section className="py-6">
       <div className="container rounded-md bg-white p-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Table>
             <TableCaption>
-              {fields?.length > 0 ? "All orders" : "Empty"}
+              {fields?.length > 0 ? "All enquiries" : "Empty"}
             </TableCaption>
             <TableHeader>
               <TableRow>
@@ -203,7 +215,7 @@ export default function Page({ params: { id } }) {
             </TableBody>
           </Table>
 
-          <div className="my-6 grid grid-cols-2 gap-4">
+          <div className="my-6 grid grid-cols-1 gap-4">
             <div>
               <Label>Convert to order</Label>
               <Controller
@@ -222,9 +234,9 @@ export default function Page({ params: { id } }) {
                 )}
                 name="order_type"
               />
-              {errors?.status && (
+              {errors?.order_type && (
                 <Small className={"text-red-500"}>
-                  {errors.status.message}
+                  {errors.order_type.message}
                 </Small>
               )}
             </div>

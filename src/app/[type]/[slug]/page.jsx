@@ -10,7 +10,6 @@ export default async function Page({
   searchParams: { page: currPage, limit },
 }) {
   const data = await fetchProducts(type, slug, currPage ? currPage : 1, limit);
-  console.log({ data });
   return (
     <section>
       <div className="container mx-auto">

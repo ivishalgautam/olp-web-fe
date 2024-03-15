@@ -1,10 +1,17 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+
+import { useQuery } from "@tanstack/react-query";
+import { useForm, Controller } from "react-hook-form";
+import { endpoints } from "@/utils/endpoints";
+
+import { cn } from "@/lib/utils";
+import http from "@/utils/http";
+
 import ProductCard from "./cards/product";
 import { H5, P } from "./ui/typography";
 import { Button } from "./ui/button";
-import { cn } from "@/lib/utils";
-import { useFetchCategories } from "@/hooks/useFetchCategories";
 import {
   Select,
   SelectContent,
@@ -16,9 +23,16 @@ import {
 } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
 import { Label } from "./ui/label";
-import { useFetchBrands } from "@/hooks/useFetchBrands";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+
+export const fetchCategories = async () => {
+  const { data } = await http().get(endpoints.categories.getAll);
+  return data;
+};
+
+export const fetchBrands = async () => {
+  const { data } = await http().get(endpoints.brands.getAll);
+  return data;
+};
 
 export default function ProductsWithFilter({ data }) {
   const router = useRouter();
@@ -26,9 +40,19 @@ export default function ProductsWithFilter({ data }) {
   const [isFilter, setIsFilter] = useState(false);
   const [categorySlugs, setCategorySlugs] = useState([]);
   const [brandSlugs, setBrandSlugs] = useState([]);
-  const { register, watch, control, setValue, getValues } = useForm();
-  const { data: categories } = useFetchCategories();
-  const { data: brands } = useFetchBrands();
+  const { watch, control, setValue, getValues } = useForm();
+
+  const { data: categories } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    enabled: watch("part") === "oem",
+  });
+
+  const { data: brands } = useQuery({
+    queryKey: ["brands"],
+    queryFn: fetchBrands,
+    enabled: watch("part") === "oem",
+  });
 
   const handleCheckChange = (type, check, slug) => {
     if (type === "brand") {

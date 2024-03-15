@@ -45,4 +45,8 @@ export const endpoints = {
   queries: {
     getAll: "/queries",
   },
+  otp: {
+    send: "/otp/send",
+    verify: "/otp/verify",
+  },
 };

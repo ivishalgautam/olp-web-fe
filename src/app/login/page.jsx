@@ -1,10 +1,10 @@
 import LoginForm from "@/components/forms/login";
-import React from "react";
+import AuthLayout from "@/components/layout/auth-layout";
 
 export default function Page() {
   return (
-    <section className="bg-gray-200 py-16">
+    <AuthLayout>
       <LoginForm />
-    </section>
+    </AuthLayout>
   );
 }

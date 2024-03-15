@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MdOutlineLocalPhone, MdOutlineShoppingCart } from "react-icons/md";
@@ -12,6 +12,7 @@ import BrowseCategory from "./browse-category";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useQuery } from "@tanstack/react-query";
+import { MainContext } from "@/store/context";
 
 export const navList = [
   { title: "Home", href: "/" },
@@ -34,9 +35,11 @@ export function logout() {
 
 export default function Navbar() {
   const [mobileNavActive, setMobileNavActive] = useState(false);
+  const { user } = useContext(MainContext);
   const { data, isFetching } = useQuery({
     queryFn: fetchTempCart,
     queryKey: ["cart"],
+    enabled: !!user,
   });
 
   return (

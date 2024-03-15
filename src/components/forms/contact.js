@@ -18,11 +18,13 @@ export default function ContactForm() {
     formState: { errors },
     register,
     handleSubmit,
+    reset,
   } = useForm();
 
   const createMutation = useMutation(createQuery, {
     onSuccess: (data) => {
       toast.success(data.message);
+      reset();
     },
     onError: (error) => {
       toast.error(error.message);
@@ -32,6 +34,8 @@ export default function ContactForm() {
   const onSubmit = (data) => {
     createMutation.mutate(data);
   };
+
+  console.log(errors);
 
   const className = "bg-gray-100 rounded-[60px] p-6 py-5.5";
 
@@ -91,6 +95,8 @@ export default function ContactForm() {
             {...register("phone", {
               required: "required",
               valueAsNumber: true,
+              min: 10,
+              max: 10,
             })}
             className={className}
           />

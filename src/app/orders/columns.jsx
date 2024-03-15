@@ -35,7 +35,6 @@ export const columns = () => [
   {
     accessorKey: "status",
     header: ({ column }) => {
-      console.log({ column });
       return <Button variant="ghost">Status</Button>;
     },
     cell: ({ row }) => {
@@ -51,7 +50,7 @@ export const columns = () => [
                 status === "partially_dispatched" || status === "dispatched",
             })}
           >
-            {status}
+            {status.split("_").join(" ")}
           </Button>
         </div>
       );
@@ -73,7 +72,6 @@ export const columns = () => [
     enableHiding: false,
     cell: ({ row }) => {
       const id = row.getValue("id");
-      console.log({ id });
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

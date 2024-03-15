@@ -17,11 +17,12 @@ import ChangePasswordForm from "@/components/forms/change-password";
 import { logout } from "@/components/Navbar";
 import Overview from "@/components/Overview";
 import Enquiries from "@/app/enquiries/page";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Spinner from "@/components/Spinner";
 
 export default function Page({ params: { slug } }) {
   const { user } = useContext(MainContext);
-  const router = useRouter();
-  if (!user) return router.push("/login");
+  if (!user) return <Spinner />;
 
   return (
     <section className="py-10">
@@ -79,13 +80,16 @@ export function Sidebar({ image_url, first_name, last_name, email, slug }) {
     <div className="">
       <div className="flex items-center justify-start gap-4 border-b py-4">
         <div>
-          <Image
-            src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image_url}`}
-            width={50}
-            height={50}
-            alt={fullname}
-            className="rounded-full"
-          />
+          <Avatar>
+            <AvatarImage
+              src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${image_url}`}
+              alt={fullname}
+            />
+            <AvatarFallback>
+              {first_name.charAt(0).toUpperCase() +
+                last_name.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
         </div>
         <div>
           <H6 className={"text-sm"}>{fullname}</H6>

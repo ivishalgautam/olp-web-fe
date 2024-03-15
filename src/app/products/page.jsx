@@ -1,11 +1,6 @@
 "use client";
 import PaginationControls from "@/components/PaginationControls";
-import AllProducts from "@/components/all-products";
 import ProductsWithFilter from "@/components/products-with-filter";
-import { useFetchProducts } from "@/hooks/useFetchProducts";
-import { MainContext } from "@/store/context";
-import { useRouter } from "next/navigation";
-import React, { useContext } from "react";
 import { useQuery } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
@@ -36,8 +31,6 @@ const fetchProducts = async (page = 1, limit, categories, brands, part) => {
 export default function Page({
   searchParams: { page: currPage, limit, categories, brands, part },
 }) {
-  const { user } = useContext(MainContext);
-
   const { data } = useQuery({
     queryKey: ["products", currPage, limit, categories, brands, part],
     queryFn: () => fetchProducts(currPage, limit, categories, brands, part),

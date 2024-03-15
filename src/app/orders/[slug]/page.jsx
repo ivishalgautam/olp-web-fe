@@ -26,6 +26,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { H2, Small } from "@/components/ui/typography";
 import { MdDelete } from "react-icons/md";
+import Spinner from "@/components/Spinner";
 
 const createOrder = (data) => {
   return http().put(`${endpoints.orders.getAll}/${data.order_id}`, data);
@@ -35,7 +36,7 @@ const deleteOrderItem = ({ id }) => {
   return http().delete(`${endpoints.orders.getAll}/order-items/${id}`);
 };
 
-export default function Page({ params: { id } }) {
+export default function Page({ params: { slug } }) {
   const {
     control,
     handleSubmit,
@@ -51,14 +52,18 @@ export default function Page({ params: { id } }) {
   });
   const queryClient = useQueryClient();
 
-  const { data, isFetching } = useQuery({
+  const { data, isLoading } = useQuery({
     queryFn: fetchOrderItems,
     queryKey: ["orders"],
-    enabled: !!id,
+    enabled: !!slug,
   });
 
   async function fetchOrderItems() {
-    return http().get(`${endpoints.orders.getAll}/getByOrderId/${id}`);
+    return http().get(`${endpoints.orders.getAll}/getByOrderId/${slug}`);
+  }
+
+  if (isLoading) {
+    return <Spinner />;
   }
 
   return (

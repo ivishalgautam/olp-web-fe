@@ -2,6 +2,7 @@ import axios from "axios";
 import { getHeader } from "./header";
 import { endpoints } from "./endpoints";
 import { logout } from "@/components/Navbar";
+import { setCookie } from "./cookies";
 
 // Default API will be your root
 const API_ROOT = process.env.NEXT_PUBLIC_API_URL;
@@ -14,7 +15,6 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
     baseURL,
     headers,
   });
-
   // Intercept response object and handleSuccess and Error Object
   client.interceptors.response.use(handleSuccess, handleError);
 
@@ -38,15 +38,14 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
       }
       // Refresh access token
       return axios
-        .post(`${API_ROOT}${endpoints.auth.refresh}`, {
-          refresh_token: refreshToken,
-        })
+        .post(`${API_ROOT}${endpoints.auth.refresh}`, { withCredentials: true })
         .then((response) => {
           const { token } = response.data;
 
           // Update the access token in the headers
           client.defaults.headers["Authorization"] = `Bearer ${token}`;
           localStorage.setItem("token", token);
+          // setCookie("accessToken", token, 1);
 
           // Retry the original request with the new access token
           error.config.headers["Authorization"] = `Bearer ${token}`;
@@ -62,7 +61,7 @@ const http = (headerType = "json", baseURL = API_ROOT) => {
             // Unable to refresh the token
             console.log("Error refreshing token:", refreshError);
           }
-          return Promise.reject(error);
+          return Promise.reject(refreshError);
         });
     }
 
