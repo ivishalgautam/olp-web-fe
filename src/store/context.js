@@ -9,17 +9,21 @@ export const MainContext = createContext(null);
 
 function Context({ children }) {
   const [user, setUser] = useState();
+  const [isUserLoading, setIsUserLoading] = useState(true);
   const pathname = usePathname();
 
   useEffect(() => {
+    setIsUserLoading(true);
     async function fetchData() {
       await http()
         .get(endpoints.profile)
         .then((data) => {
           setUser(data);
+          setIsUserLoading(false);
         })
         .catch((error) => {
           console.log(error);
+          setIsUserLoading(false);
         });
     }
     if (!["/login", "/signup"].includes(pathname)) fetchData();
@@ -30,6 +34,7 @@ function Context({ children }) {
       value={{
         user,
         setUser,
+        isUserLoading,
       }}
     >
       {children}

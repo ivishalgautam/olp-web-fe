@@ -11,23 +11,23 @@ export default function Layout({ children }) {
   const pathname = usePathname();
   const router = useRouter();
   const { slug } = useParams();
-  const { user } = useContext(MainContext);
+  const { user, isUserLoading } = useContext(MainContext);
 
   useEffect(() => {
     if (pathname === "/login" || pathname === "/signup") {
       return;
     }
+    if (isUserLoading) return;
 
     // Find the current route in the AllRoutes array
     const currentRoute = allRoutes?.find(
       (route) => route.link === pathname.replace(slug, "[slug]"),
     );
-    // console.log({ currentRoute });
 
-    if (user && currentRoute.roles.length && !user?.is_verified)
+    if (user && currentRoute?.roles?.length && !user?.is_verified)
       return router.push("/verify");
-    // If the current route is not found in the array or the user's role is not allowed for this route
 
+    // If the current route is not found in the array or the user's role is not allowed for this route
     if (
       currentRoute &&
       currentRoute.roles.length &&
@@ -35,7 +35,7 @@ export default function Layout({ children }) {
     ) {
       router.replace("/login");
     }
-  }, [pathname, user]);
+  }, [pathname, user, isUserLoading]);
 
   return (
     <div>

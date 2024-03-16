@@ -2,13 +2,13 @@ import ImageSlider from "@/components/ImageSlider";
 import ProductCard from "@/components/cards/product";
 import AddToCart from "@/components/forms/add-to-cart";
 import { Button } from "@/components/ui/button";
-import { H1, H2, Small } from "@/components/ui/typography";
+import { H1, H2, P, Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { fetchProduct } from "@/utils/api";
 
 export default async function Page({ params: { slug } }) {
   const { data } = await fetchProduct(slug);
-  console.log(data.related_products);
+  // console.log({ data });
   return (
     <section className="py-14">
       <div className="container space-y-10">
@@ -77,17 +77,21 @@ export default async function Page({ params: { slug } }) {
               Related products
             </Button>
           </div>
-          <div className="grid grid-cols-1 py-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-            {data?.related_products?.map(({ id, pictures, title, slug }) => (
-              <ProductCard
-                key={id}
-                image={pictures[0]}
-                slug={slug}
-                title={title}
-                id={id}
-              />
-            ))}
-          </div>
+          {data?.related_products?.length ? (
+            <div className="grid grid-cols-1 gap-4 py-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
+              {data?.related_products?.map(({ id, pictures, title, slug }) => (
+                <ProductCard
+                  key={id}
+                  image={pictures[0]}
+                  slug={slug}
+                  title={title}
+                  id={id}
+                />
+              ))}
+            </div>
+          ) : (
+            <P>No related products.</P>
+          )}
         </div>
       </div>
     </section>
