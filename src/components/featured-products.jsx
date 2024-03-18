@@ -20,7 +20,7 @@ export default function FeaturedProducts() {
 
   // console.log({ products: data });
   return (
-    <div className="bg-white">
+    <div className="pb-10">
       <div className="container space-y-4 pt-16">
         <H3 className={"border-b pb-4"}>
           <span className="border-b-2 border-primary py-3">Featured </span>
@@ -30,14 +30,8 @@ export default function FeaturedProducts() {
           {!data?.data?.length ? (
             <P>Not found!</P>
           ) : (
-            data?.data?.map(({ id, title, pictures, slug }) => (
-              <ProductCard
-                key={id}
-                title={title}
-                image={pictures[0]}
-                slug={slug}
-                id={id}
-              />
+            data?.data?.map((product) => (
+              <ProductCard key={product.id} {...product} />
             ))
           )}
         </div>

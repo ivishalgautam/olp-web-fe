@@ -77,7 +77,10 @@ export default function Footer() {
                       key={item}
                       className="transition-transform hover:translate-x-1"
                     >
-                      <Link href={"#"} className="text-sm capitalize">
+                      <Link
+                        href={item === "home" ? "/" : `/${item}`}
+                        className="text-sm capitalize"
+                      >
                         {item}
                       </Link>
                     </li>
@@ -93,7 +96,10 @@ export default function Footer() {
                       key={item}
                       className="transition-transform hover:translate-x-1"
                     >
-                      <Link href={"#"} className="text-sm capitalize">
+                      <Link
+                        href={`/products?part=${item.toLowerCase()}`}
+                        className="text-sm capitalize"
+                      >
                         {item}
                       </Link>
                     </li>

@@ -96,7 +96,6 @@ export default function ContactForm() {
               required: "required",
               valueAsNumber: true,
               min: 10,
-              max: 10,
             })}
             className={className}
           />

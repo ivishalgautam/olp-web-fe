@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -30,23 +31,29 @@ export default function Hero() {
       {/* images */}
       <div className="grid grid-cols-1 gap-2 p-4 sm:grid-cols-3 sm:gap-0">
         <div className="">
-          <Image
-            src={"/genuine-big.jpg"}
-            width={1000}
-            height={500}
-            alt="genuine"
-          />
+          <Link href="/products?page=1&part=genuine">
+            <Image
+              src={"/genuine-big.jpg"}
+              width={1000}
+              height={500}
+              alt="genuine"
+            />
+          </Link>
         </div>
         <div className="">
-          <Image src={"/oem-big.jpg"} width={1000} height={500} alt="oem" />
+          <Link href="/products?page=1&part=oem">
+            <Image src={"/oem-big.jpg"} width={1000} height={500} alt="oem" />
+          </Link>
         </div>
         <div className="">
-          <Image
-            src={"/aftermarket-big.jpg"}
-            width={1000}
-            height={500}
-            alt="aftermarket"
-          />
+          <Link href="/products?page=1&part=aftermarket">
+            <Image
+              src={"/aftermarket-big.jpg"}
+              width={1000}
+              height={500}
+              alt="aftermarket"
+            />
+          </Link>
         </div>
       </div>
     </div>

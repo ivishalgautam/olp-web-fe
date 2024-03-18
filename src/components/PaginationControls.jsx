@@ -19,7 +19,7 @@ export default function PaginationControls({ total_page }) {
 
   return (
     total_page > 1 && (
-      <div className="space-x-4">
+      <div className="mt-6 space-x-4">
         <Button
           onClick={() => handlePageChange(Number(searchParams.get("page")) - 1)}
           disabled={page === 1}

@@ -16,7 +16,7 @@ export default function CategoryCard({ slug, image, name }) {
             />
           </figure>
         </div>
-        <span className="mt-3 font-semibold capitalize">{name}</span>
+        <span className="mt-3 text-sm font-semibold uppercase">{name}</span>
       </div>
     </Link>
   );

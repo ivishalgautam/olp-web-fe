@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { useForm, Controller } from "react-hook-form";
 import { endpoints } from "@/utils/endpoints";
+import { CiFilter } from "react-icons/ci";
+import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 
 import { cn } from "@/lib/utils";
 import http from "@/utils/http";
@@ -86,7 +88,7 @@ export default function ProductsWithFilter({ data }) {
   };
 
   useEffect(() => {
-    setValue("part", searchParams.get("part"));
+    searchParams.get("part") && setValue("part", searchParams.get("part"));
     setCategorySlugs(searchParams.get("categories")?.split("_") ?? []);
     setBrandSlugs(searchParams.get("brands")?.split("_") ?? []);
   }, [searchParams]);
@@ -103,21 +105,21 @@ export default function ProductsWithFilter({ data }) {
       <div className="space-y-2">
         <Button
           onClick={() => setIsFilter(!isFilter)}
-          className="cursor-pointer"
+          className="flex cursor-pointer items-center justify-center gap-2"
         >
-          Filter
+          <CiFilter size={20} /> Filter <MdOutlineKeyboardArrowDown size={25} />
         </Button>
 
         <div
           className={cn(
-            "h-0 overflow-hidden rounded-md shadow-lg transition-all",
+            "h-0 overflow-y-scroll rounded-md bg-white shadow-lg transition-all",
             {
               "h-96 p-4": isFilter,
             },
           )}
         >
           <div className="space-y-4">
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               {/* by part type */}
               <div className="space-y-2">
                 <H5>By part type</H5>
@@ -128,7 +130,7 @@ export default function ProductsWithFilter({ data }) {
                     render={({ field }) => (
                       <Select
                         onValueChange={field.onChange}
-                        value={field.value}
+                        value={field?.value}
                       >
                         <SelectTrigger className="w-[180px]">
                           <SelectValue placeholder="Select part type" />
@@ -153,7 +155,7 @@ export default function ProductsWithFilter({ data }) {
               {watch("part") === "oem" && (
                 <div className="space-y-2">
                   <H5>By Categories</H5>
-                  <div className="space-y-2">
+                  <div className="flex flex-wrap items-center justify-start gap-2 md:block md:space-y-2">
                     {categories?.map(({ id, name, slug }) => (
                       <div
                         key={id}
@@ -176,7 +178,7 @@ export default function ProductsWithFilter({ data }) {
               {watch("part") === "oem" && (
                 <div className="space-y-2">
                   <H5>By Brands</H5>
-                  <div className="space-y-2">
+                  <div className="flex flex-wrap items-center justify-start gap-2 md:block md:space-y-2">
                     {brands?.map(({ id, name, slug }) => (
                       <div
                         key={id}
@@ -205,14 +207,8 @@ export default function ProductsWithFilter({ data }) {
         {data?.length === 0 && (
           <P className={"col-span-4 text-center"}>No products found!</P>
         )}
-        {data?.map(({ id, pictures, title, slug }) => (
-          <ProductCard
-            key={id}
-            image={pictures[0]}
-            title={title}
-            id={id}
-            slug={slug}
-          />
+        {data?.map((product) => (
+          <ProductCard key={product.id} {...product} />
         ))}
       </div>
     </div>

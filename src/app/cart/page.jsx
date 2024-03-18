@@ -4,6 +4,7 @@ import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
 import CartForm from "@/components/forms/cart";
+import { useRouter } from "next/navigation";
 
 const createOrder = (data) => {
   return http().post(endpoints.orders.getAll, { items: data });
@@ -15,6 +16,7 @@ const fetchTempCart = () => {
 
 export default function Page() {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { data } = useQuery({
     queryFn: fetchTempCart,
@@ -25,6 +27,7 @@ export default function Page() {
     onSuccess: (data) => {
       toast.success(data.message);
       queryClient.invalidateQueries("cart");
+      router.push("/");
     },
     onError: (error) => {
       console.log({ error });
@@ -37,7 +40,7 @@ export default function Page() {
   };
 
   return (
-    <section className="rounded-md bg-white p-4">
+    <section className="rounded-md p-4">
       <div className="container">
         <CartForm data={data} handleCreate={handleCreate} />
       </div>

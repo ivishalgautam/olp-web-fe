@@ -2,7 +2,7 @@ import ImageSlider from "@/components/ImageSlider";
 import ProductCard from "@/components/cards/product";
 import AddToCart from "@/components/forms/add-to-cart";
 import { Button } from "@/components/ui/button";
-import { H1, H2, P, Small } from "@/components/ui/typography";
+import { H1, H2, H3, H4, H5, P, Small } from "@/components/ui/typography";
 import { cn } from "@/lib/utils";
 import { fetchProduct } from "@/utils/api";
 
@@ -12,53 +12,55 @@ export default async function Page({ params: { slug } }) {
   return (
     <section className="py-14">
       <div className="container space-y-10">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="">
-            <ImageSlider pictures={data?.pictures} />
-          </div>
-          {/* description */}
-          <div className="space-y-10 divide-y">
-            <div className="space-y-4">
-              <H2 className={"border-none text-4xl font-bold"}>
-                {data?.title}
-              </H2>
-              <div dangerouslySetInnerHTML={{ __html: data.description }}></div>
-              <AddToCart id={data?.id} />
+        <div className="rounded-md bg-white p-8">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            <div className="">
+              <ImageSlider pictures={data?.pictures} />
             </div>
+            {/* description */}
+            <div className="space-y-10 divide-y">
+              <div className="space-y-4">
+                <H3 className={"border-none font-bold"}>{data?.title}</H3>
+                <div
+                  dangerouslySetInnerHTML={{ __html: data.description }}
+                ></div>
+                <AddToCart id={data?.id} />
+              </div>
 
-            <div className="py-6">
-              <div>
-                <Small className={"font-normal"}>SKU: {data?.sku}</Small>
-              </div>
-              <div>
-                <Small className={"font-normal"}>
-                  Categories: {data?.category_name}
-                </Small>
-              </div>
-              <div>
-                <Small className={"font-normal"}>
-                  Tags: {data?.tags.join(", ")}
-                </Small>
-              </div>
-              <div>
-                <Small className={"font-normal"}>
-                  Availabilty:{" "}
-                  <span
-                    className={cn({
-                      "text-red-500": false,
-                      "text-green-500": true,
-                    })}
-                  >
-                    {true ? "In stock" : "Out of stock"}
-                  </span>
-                </Small>
+              <div className="py-6">
+                <div>
+                  <Small className={"font-normal"}>SKU: {data?.sku}</Small>
+                </div>
+                <div>
+                  <Small className={"font-normal"}>
+                    Categories: {data?.category_name}
+                  </Small>
+                </div>
+                <div>
+                  <Small className={"font-normal"}>
+                    Tags: {data?.tags.join(", ")}
+                  </Small>
+                </div>
+                <div>
+                  <Small className={"font-normal"}>
+                    Availabilty:{" "}
+                    <span
+                      className={cn({
+                        "text-red-500": false,
+                        "text-green-500": true,
+                      })}
+                    >
+                      {true ? "In stock" : "Out of stock"}
+                    </span>
+                  </Small>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* description */}
-        <div>
+        <div className="rounded-md bg-white p-8">
           <div className="border-b">
             <Button className="rounded-none border-b-2 border-primary bg-transparent p-0 pb-2 text-lg text-primary hover:bg-transparent">
               Description
@@ -79,14 +81,8 @@ export default async function Page({ params: { slug } }) {
           </div>
           {data?.related_products?.length ? (
             <div className="grid grid-cols-1 gap-4 py-6 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-              {data?.related_products?.map(({ id, pictures, title, slug }) => (
-                <ProductCard
-                  key={id}
-                  image={pictures[0]}
-                  slug={slug}
-                  title={title}
-                  id={id}
-                />
+              {data?.related_products?.map((product) => (
+                <ProductCard key={product.id} {...product} />
               ))}
             </div>
           ) : (

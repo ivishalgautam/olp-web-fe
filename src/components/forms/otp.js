@@ -13,6 +13,7 @@ import { useMutation } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const sendOtp = async () => {
   return await http().post(endpoints.otp.send);
@@ -23,22 +24,26 @@ const verifyOtp = async ({ otp }) => {
 };
 
 export default function OTPForm() {
+  const router = useRouter();
   const { control, watch, handleSubmit } = useForm({
     defaultValues: { otp: "" },
   });
   const [isResendDisabled, setIsResendDisabled] = useState(false);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [minute] = useState(5);
 
   const sendMutation = useMutation(sendOtp, {
     onSuccess: (data) => {
       toast.success(data.message);
-    },
-    onMutate: () => {
       setIsResendDisabled(true);
-      setRemainingTime(300);
-      setTimeout(() => setIsResendDisabled(false), 1000 * 50);
+      setRemainingTime(60 * minute);
+      setTimeout(() => setIsResendDisabled(false), 1000 * 60 * minute);
     },
     onError: (error) => {
+      console.log(error);
+      if (error.response.status === 500) {
+        return toast.error("Error sending otp!");
+      }
       toast.error(error.message);
     },
   });
@@ -46,6 +51,7 @@ export default function OTPForm() {
   const verifyMutation = useMutation(verifyOtp, {
     onSuccess: (data) => {
       toast.success(data.message);
+      router.replace("/");
     },
     onError: (error) => {
       toast.error(error.message);

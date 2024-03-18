@@ -49,7 +49,7 @@ export default function Enquiries() {
   };
 
   return (
-    <div className="container mx-auto rounded-lg border-input bg-white p-8">
+    <div className="mt-5 rounded-lg border-input bg-white">
       <DataTable columns={columns(handleDelete)} data={data?.data} />
     </div>
   );

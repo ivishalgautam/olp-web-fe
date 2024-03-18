@@ -27,24 +27,28 @@ export default function Page({ params: { slug } }) {
   return (
     <section className="py-10">
       <div className="container">
-        <div className="grid grid-cols-4 gap-6">
-          <div className="col-span-1">
-            <Sidebar {...user} slug={slug} />
+        <div className="grid grid-cols-12 gap-6">
+          <div className="col-span-12 md:col-span-4 lg:col-span-3">
+            <div className="rounded-md bg-white p-4">
+              <Sidebar {...user} slug={slug} />
+            </div>
           </div>
-          <div className="col-span-3">
-            {slug === "overview" && <Overview />}
-            {slug === "enquiry-product" && (
-              <div className="rounded-lg border p-4">
-                <H4>Enquiries</H4> <Enquiries />
-              </div>
-            )}
-            {slug === "orders" && (
-              <div className="rounded-lg border p-4">
-                <H4>Orders</H4> <Orders />
-              </div>
-            )}
-            {slug === "profile" && <ProfileForm />}
-            {slug === "change-password" && <ChangePasswordForm />}
+          <div className="col-span-12 md:col-span-8 lg:col-span-9">
+            <div className="rounded-md bg-white p-4">
+              {slug === "overview" && <Overview />}
+              {slug === "enquiry-product" && (
+                <div className="rounded-lg border p-4">
+                  <H4>Enquiries</H4> <Enquiries />
+                </div>
+              )}
+              {slug === "orders" && (
+                <div className="rounded-lg border p-4">
+                  <H4>Orders</H4> <Orders />
+                </div>
+              )}
+              {slug === "profile" && <ProfileForm />}
+              {slug === "change-password" && <ChangePasswordForm />}
+            </div>
           </div>
         </div>
       </div>

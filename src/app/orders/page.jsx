@@ -25,7 +25,7 @@ export default function Orders() {
   }
 
   return (
-    <div className="container mx-auto rounded-lg border-input bg-white p-8">
+    <div className="mt-5 rounded-lg border-input bg-white">
       <DataTable columns={columns()} data={data?.data} />
     </div>
   );

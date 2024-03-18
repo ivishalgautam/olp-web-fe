@@ -24,14 +24,14 @@ export default function ProductsWithTabs() {
 
   // console.log({ data });
   return (
-    <div className="bg-white">
-      <div className="container space-y-4 pt-16">
+    <div className="">
+      <div className="container space-y-4 py-4">
         <ul className="flex items-center justify-start gap-4 border-b">
           {["genuine", "oem", "aftermarket"].map((item) => (
             <li
               key={item}
               className={cn(
-                `cursor-pointer border-b-2 border-white px-2 py-3 text-sm font-semibold`,
+                `cursor-pointer border-b-2 border-transparent px-2 py-3 text-sm font-semibold`,
                 { "border-primary": item === activeTab },
               )}
             >
@@ -47,14 +47,8 @@ export default function ProductsWithTabs() {
           {!data?.data?.length ? (
             <P>Not found!</P>
           ) : (
-            data?.data?.map(({ id, title, pictures, slug }) => (
-              <ProductCard
-                key={id}
-                title={title}
-                slug={slug}
-                image={pictures[0]}
-                id={id}
-              />
+            data?.data?.map((product) => (
+              <ProductCard key={product.id} {...product} />
             ))
           )}
         </div>

@@ -10,7 +10,10 @@ import "swiper/css";
 import CategoryCard from "./cards/category";
 
 export const fetchCategories = async () => {
-  return await http().get(`${endpoints.categories.getAll}?featured=true`);
+  const { data } = await http().get(
+    `${endpoints.categories.getAll}?featured=true`,
+  );
+  return data;
 };
 
 export default function FeaturedCategories() {
@@ -47,7 +50,7 @@ export default function FeaturedCategories() {
   };
 
   return (
-    <div className="bg-[#f4f5f9] py-16">
+    <div className="bg-[#f4f5f9] py-4">
       <div className="container space-y-4">
         <H3>Feature categories</H3>
         <div className="">
@@ -60,7 +63,7 @@ export default function FeaturedCategories() {
             // onSwiper={(swiper) => console.log(swiper)}
             breakpoints={breakpoints}
           >
-            {data?.data?.map(({ id, slug, name, image }) => (
+            {data?.map(({ id, slug, name, image }) => (
               <SwiperSlide key={id}>
                 <CategoryCard slug={slug} name={name} image={image} />
               </SwiperSlide>

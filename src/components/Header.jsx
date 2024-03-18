@@ -55,9 +55,10 @@ export const HeaderMiddle = ({ data }) => {
   return (
     <div className="container hidden min-h-16 md:block">
       <div className="flex items-center justify-between py-8">
-        <div className="relative h-16 w-24">
+        <div className="">
           <Image
-            fill
+            width={100}
+            height={100}
             src={"/logo.png"}
             alt="logo"
             className="h-full w-full object-contain object-center"

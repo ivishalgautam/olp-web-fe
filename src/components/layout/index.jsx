@@ -40,8 +40,8 @@ export default function Layout({ children }) {
   return (
     <div>
       <Header />
-      <main className="h-screen">
-        {children}
+      <main className="min-h-screen bg-gray-100">
+        <div className="h-full">{children}</div>
         <Footer />
       </main>
     </div>

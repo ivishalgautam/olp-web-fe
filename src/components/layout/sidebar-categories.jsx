@@ -9,7 +9,8 @@ import { cn } from "@/lib/utils";
 import { useParams } from "next/navigation";
 
 export const fetchCategories = async () => {
-  return await http().get(endpoints.categories.getAll);
+  const { data } = await http().get(endpoints.categories.getAll);
+  return data;
 };
 
 export default function SidebarCategories() {
@@ -20,7 +21,7 @@ export default function SidebarCategories() {
   });
 
   return (
-    <div className="rounded-md bg-gray-100 p-4">
+    <div className="rounded-md bg-white p-4">
       <H5>Categories</H5>
       <ul
         className={cn("mt-4 h-[20rem] divide-y overflow-y-scroll", {
@@ -34,7 +35,7 @@ export default function SidebarCategories() {
               className="h-8 animate-pulse rounded-lg bg-gray-200 py-2"
             ></li>
           ))}
-        {data?.data?.map(({ name, slug, id }) => (
+        {data?.map(({ name, slug, id }) => (
           <li
             key={id}
             className={cn(`py-2 text-sm font-medium capitalize`, {

@@ -44,8 +44,6 @@ export default function Page({ params: { slug } }) {
     control,
     handleSubmit,
     setValue,
-    register,
-    watch,
     getValues,
     formState: { errors },
   } = useForm();
@@ -59,8 +57,8 @@ export default function Page({ params: { slug } }) {
   const updateMutation = useMutation(updateEnquiry, {
     onSuccess: (data) => {
       toast.success(data.message);
-      queryClient.invalidateQueries("enquiries");
-      router.push("/enquiries");
+      // queryClient.invalidateQueries("enquiries");
+      router.push("/");
     },
     onError: (error) => {
       console.log({ error });
@@ -138,7 +136,7 @@ export default function Page({ params: { slug } }) {
   };
 
   async function handleCreate(data) {
-    updateMutation.mutate({ ...data, order_id: id });
+    updateMutation.mutate({ ...data, order_id: slug });
   }
 
   if (isLoading) {
@@ -149,9 +147,7 @@ export default function Page({ params: { slug } }) {
       <div className="container rounded-md bg-white p-4">
         <form onSubmit={handleSubmit(onSubmit)}>
           <Table>
-            <TableCaption>
-              {fields?.length > 0 ? "All enquiries" : "Empty"}
-            </TableCaption>
+            <TableCaption>{fields?.length === 0 && "Empty"}</TableCaption>
             <TableHeader>
               <TableRow>
                 <TableHead>Image</TableHead>

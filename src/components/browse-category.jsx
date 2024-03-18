@@ -1,9 +1,33 @@
-import React, { useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { IoIosArrowDown } from "react-icons/io";
 import { LuBarChartHorizontal } from "react-icons/lu";
+import { useQuery } from "@tanstack/react-query";
+import http from "@/utils/http";
+import { endpoints } from "@/utils/endpoints";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import Spinner from "./Spinner";
+
+export const fetchCategories = async () => {
+  const { data } = await http().get(endpoints.categories.getAll);
+  return data;
+};
 
 export default function BrowseCategory() {
+  const pathname = usePathname();
   const [isCategory, setIsCategory] = useState(false);
+  const { data, isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: fetchCategories,
+    enabled: !!isCategory,
+  });
+
+  useEffect(() => {
+    return () => {
+      setIsCategory(false);
+    };
+  }, [pathname]);
 
   return (
     <div className="relative">
@@ -16,8 +40,22 @@ export default function BrowseCategory() {
         <IoIosArrowDown size={25} className={isCategory && "rotate-180"} />
       </button>
       <div
-        className={`absolute h-16 w-full bg-black ${isCategory ? "opacity-100" : "opacity-0"} mt-4 transition-all`}
-      ></div>
+        className={`absolute z-50 max-h-72 w-full overflow-y-scroll rounded bg-white p-4 ${isCategory ? "block" : "hidden"} mt-4 transition-all`}
+      >
+        <div className="space-y-2">
+          {isLoading && <Spinner />}
+          {data?.map((cat) => (
+            <div key={cat.id}>
+              <Link
+                href={`/categories/${cat.slug}`}
+                className="capitalize text-gray-700 transition-colors hover:text-primary"
+              >
+                {cat.name}
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

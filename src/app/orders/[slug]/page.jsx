@@ -1,19 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import { useFieldArray, useForm, Controller } from "react-hook-form";
-import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { useFieldArray, useForm } from "react-hook-form";
 import {
   Table,
   TableBody,
@@ -23,34 +14,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { H2, Small } from "@/components/ui/typography";
-import { MdDelete } from "react-icons/md";
+import { H2 } from "@/components/ui/typography";
 import Spinner from "@/components/Spinner";
 
-const createOrder = (data) => {
-  return http().put(`${endpoints.orders.getAll}/${data.order_id}`, data);
-};
-
-const deleteOrderItem = ({ id }) => {
-  return http().delete(`${endpoints.orders.getAll}/order-items/${id}`);
-};
-
 export default function Page({ params: { slug } }) {
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    register,
-    watch,
-    getValues,
-    formState: { errors },
-  } = useForm({ defaultValues: { status: "", items: [] } });
-  const { fields, append, remove } = useFieldArray({
+  const { control } = useForm({ defaultValues: { status: "", items: [] } });
+  const { fields } = useFieldArray({
     control,
     name: "items",
   });
-  const queryClient = useQueryClient();
 
   const { data, isLoading } = useQuery({
     queryFn: fetchOrderItems,
