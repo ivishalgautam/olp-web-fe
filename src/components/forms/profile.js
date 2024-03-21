@@ -18,7 +18,6 @@ const update = async (data) => {
 };
 
 export default function ProfileForm() {
-  const [birthDate, setBirthDate] = useState();
   const { user } = useContext(MainContext);
   const {
     register,
@@ -53,7 +52,6 @@ export default function ProfileForm() {
       birth_date: data.birth_date,
       email: data.email,
       mobile_number: data.mobile_number,
-      birth_date: moment(birthDate).format("YYYY-MM-DD"),
     };
 
     handleUpdate(payload);
@@ -62,10 +60,6 @@ export default function ProfileForm() {
   function handleUpdate(data) {
     updateMutation.mutate(data);
   }
-
-  useEffect(() => {
-    setBirthDate(new Date(user?.birth_date));
-  }, [user]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
@@ -94,26 +88,6 @@ export default function ProfileForm() {
             />
             {errors.last_name && (
               <span className="text-red-600">{errors.last_name.message}</span>
-            )}
-          </div>
-
-          <div>
-            <Label>Date of birth</Label>
-            <div>
-              <Controller
-                name="birth_date"
-                control={control}
-                render={({ field }) => (
-                  <DatePicker
-                    onSelect={field.onChange}
-                    setBirthDate={setBirthDate}
-                    birthDate={birthDate}
-                  />
-                )}
-              />
-            </div>
-            {errors.birth_date && (
-              <span className="text-red-600">{errors.birth_date.message}</span>
             )}
           </div>
 

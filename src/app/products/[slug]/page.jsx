@@ -2,13 +2,11 @@ import ImageSlider from "@/components/ImageSlider";
 import ProductCard from "@/components/cards/product";
 import AddToCart from "@/components/forms/add-to-cart";
 import { Button } from "@/components/ui/button";
-import { H1, H2, H3, H4, H5, P, Small } from "@/components/ui/typography";
-import { cn } from "@/lib/utils";
+import { H3, P } from "@/components/ui/typography";
 import { fetchProduct } from "@/utils/api";
 
 export default async function Page({ params: { slug } }) {
   const { data } = await fetchProduct(slug);
-  // console.log({ data });
   return (
     <section className="py-14">
       <div className="container space-y-10">
@@ -21,38 +19,34 @@ export default async function Page({ params: { slug } }) {
             <div className="space-y-10 divide-y">
               <div className="space-y-4">
                 <H3 className={"border-none font-bold"}>{data?.title}</H3>
-                <div
-                  dangerouslySetInnerHTML={{ __html: data.description }}
-                ></div>
+                <div>
+                  {Array.isArray(data?.custom_description) &&
+                    data?.custom_description?.map((cd, ind) => (
+                      <div key={ind}>
+                        <span className="font-bold capitalize">{cd.key}</span>:{" "}
+                        <span>{cd.value}</span>
+                      </div>
+                    ))}
+                </div>
                 <AddToCart id={data?.id} />
               </div>
 
               <div className="py-6">
                 <div>
-                  <Small className={"font-normal"}>SKU: {data?.sku}</Small>
+                  <span className="text-sm font-bold capitalize">SKU: </span>
+                  <span className="text-sm">{data?.sku}</span>
                 </div>
                 <div>
-                  <Small className={"font-normal"}>
-                    Categories: {data?.category_name}
-                  </Small>
+                  <span className="text-sm font-bold capitalize">
+                    Categories:{" "}
+                  </span>
+                  <span className="text-sm">{data?.category_name}</span>
                 </div>
                 <div>
-                  <Small className={"font-normal"}>
-                    Tags: {data?.tags.join(", ")}
-                  </Small>
-                </div>
-                <div>
-                  <Small className={"font-normal"}>
-                    Availabilty:{" "}
-                    <span
-                      className={cn({
-                        "text-red-500": false,
-                        "text-green-500": true,
-                      })}
-                    >
-                      {true ? "In stock" : "Out of stock"}
-                    </span>
-                  </Small>
+                  <div>
+                    <span className="text-sm font-bold capitalize">Tags: </span>
+                    <span className="text-sm">{data?.tags.join(", ")}</span>
+                  </div>
                 </div>
               </div>
             </div>

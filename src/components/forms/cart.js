@@ -60,7 +60,7 @@ export default function CartForm({ data, handleCreate }) {
 
   useEffect(() => {
     remove();
-    data?.data?.map((prd) =>
+    data?.map((prd) =>
       append({
         _id: prd.id,
         product_id: prd.product_id,

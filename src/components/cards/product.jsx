@@ -11,6 +11,12 @@ import { toast } from "sonner";
 import { MainContext } from "@/store/context";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
 
 const addToCart = (data) => {
   return http().post(`${endpoints.cart.getAll}/temp-cart`, data);
@@ -92,12 +98,21 @@ export default function ProductCard({
         </Link>
       </div>
       <div className="w-full border-t pt-5">
-        <Button
-          className="w-full bg-gray-100 text-black hover:text-white"
-          onClick={() => handleAddTocart(id)}
-        >
-          <IoBagHandleOutline size={20} />
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger className="w-full">
+              <Button
+                className="w-full bg-gray-100 text-black hover:text-white"
+                onClick={() => handleAddTocart(id)}
+              >
+                <IoBagHandleOutline size={20} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Add to cart</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
     </div>
   );

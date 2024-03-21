@@ -7,23 +7,19 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useForm } from "react-hook-form";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
 import { useRouter } from "next/navigation";
 import { isObject } from "@/utils/object";
 import { toast } from "sonner";
-import { setCookie } from "@/utils/cookies";
 
 export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const {
-    control,
     register,
-    getValues,
     handleSubmit,
     formState: { errors },
   } = useForm();
@@ -33,9 +29,6 @@ export default function LoginForm() {
     try {
       const response = await http().post(endpoints.auth.login, credentials);
       localStorage.setItem("user", JSON.stringify(response.user_data));
-      // setCookie("accessToken", response.accessToken, 1);
-      // setCookie("refreshToken", response.refresh_token, 7);
-
       localStorage.setItem("token", response.token);
       localStorage.setItem("refreshToken", response.refresh_token);
       router.push("/");
@@ -102,7 +95,7 @@ export default function LoginForm() {
           <div className="translate-y-4">
             <P className={"text-center text-sm font-medium tracking-wide"}>
               Do not have an account?{" "}
-              <Link href={"#"} className="text-primary">
+              <Link href={"/signin"} className="text-primary">
                 Create one
               </Link>
             </P>

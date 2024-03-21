@@ -29,13 +29,15 @@ export default function ImageSlider({ pictures }) {
         >
           {pictures?.map((picture, key) => (
             <SwiperSlide key={picture}>
-              <Image
-                src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${picture}`}
-                alt={`image-${key}`}
-                width={500}
-                height={500}
-                className="rounded-xl"
-              />
+              <div className="p-8">
+                <Image
+                  src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${picture}`}
+                  alt={`image-${key}`}
+                  width={1000}
+                  height={1000}
+                  className="rounded-xl"
+                />
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>
@@ -53,12 +55,12 @@ export default function ImageSlider({ pictures }) {
         >
           {pictures?.map((picture, key) => (
             <SwiperSlide key={picture}>
-              <div className="rounded-md border border-black">
+              <div className="relative rounded-md border border-black p-4">
                 <Image
                   src={`${process.env.NEXT_PUBLIC_IMAGE_DOMAIN}/${picture}`}
                   alt={`image-${key}`}
-                  width={500}
-                  height={500}
+                  width={50}
+                  height={50}
                   className="rounded-xl"
                 />
               </div>

@@ -14,7 +14,11 @@ export default function Layout({ children }) {
   const { user, isUserLoading } = useContext(MainContext);
 
   useEffect(() => {
-    if (pathname === "/login" || pathname === "/signup") {
+    if (
+      pathname === "/login" ||
+      pathname === "/signin" ||
+      pathname === "/verify"
+    ) {
       return;
     }
     if (isUserLoading) return;

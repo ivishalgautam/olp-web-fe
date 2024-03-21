@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { endpoints } from "@/utils/endpoints";
-import { useFieldArray, useForm } from "react-hook-form";
 import {
   Table,
   TableBody,
@@ -18,12 +18,6 @@ import { H2 } from "@/components/ui/typography";
 import Spinner from "@/components/Spinner";
 
 export default function Page({ params: { slug } }) {
-  const { control } = useForm({ defaultValues: { status: "", items: [] } });
-  const { fields } = useFieldArray({
-    control,
-    name: "items",
-  });
-
   const { data, isLoading } = useQuery({
     queryFn: fetchOrderItems,
     queryKey: ["orders"],
@@ -31,7 +25,8 @@ export default function Page({ params: { slug } }) {
   });
 
   async function fetchOrderItems() {
-    return http().get(`${endpoints.orders.getAll}/getByOrderId/${slug}`);
+    const { data } = await http().get(`${endpoints.orders.getAll}/${slug}`);
+    return data;
   }
 
   if (isLoading) {
@@ -41,9 +36,7 @@ export default function Page({ params: { slug } }) {
   return (
     <div className="container rounded-md bg-white p-4">
       <Table>
-        <TableCaption>
-          {fields?.length > 0 ? "All orders" : "Empty"}
-        </TableCaption>
+        {data?.items?.length === 0 && <TableCaption>Empty</TableCaption>}
         <TableHeader>
           <TableRow>
             <TableHead>Image</TableHead>
@@ -54,7 +47,7 @@ export default function Page({ params: { slug } }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.items?.map((field, key) => (
+          {data?.items?.map((field) => (
             <TableRow key={field.id}>
               {/* image */}
               <TableCell>
@@ -68,7 +61,14 @@ export default function Page({ params: { slug } }) {
               </TableCell>
 
               {/* name */}
-              <TableCell>{field.title}</TableCell>
+              <TableCell>
+                <Link
+                  href={`/products/${field.slug}`}
+                  className="hover:text-primary"
+                >
+                  {field.title}
+                </Link>
+              </TableCell>
 
               {/* quantity */}
               <TableCell>{field.quantity}</TableCell>

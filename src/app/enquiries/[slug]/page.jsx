@@ -1,19 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import http from "@/utils/http";
 import { useFieldArray, useForm, Controller } from "react-hook-form";
 import { toast } from "sonner";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -24,7 +16,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Small } from "@/components/ui/typography";
 import { MdDelete } from "react-icons/md";
 import { endpoints } from "../../../utils/endpoints";
 import { useRouter } from "next/navigation";
@@ -36,6 +27,10 @@ const updateEnquiry = (data) => {
 
 const deleteOrderItem = ({ id }) => {
   return http().delete(`${endpoints.enquiries.getAll}/order-items/${id}`);
+};
+
+const convertToOrder = ({ id }) => {
+  return http().post(`${endpoints.enquiries.getAll}/convertToOrder/${id}`);
 };
 
 export default function Page({ params: { slug } }) {
@@ -88,12 +83,11 @@ export default function Page({ params: { slug } }) {
       try {
         setIsLoading(true);
         const { data } = await http().get(
-          `${endpoints.enquiries.getAll}/getByEnquiryId/${id}`,
+          `${endpoints.enquiries.getAll}/${id}`,
         );
+        console.log({ data });
         remove();
         data && setValue("status", data.status);
-        data && setValue("enquiry_status", data.enquiry_status);
-        data && setValue("order_type", data.order_type);
         data &&
           data?.items?.map((ord) =>
             append({
@@ -101,10 +95,10 @@ export default function Page({ params: { slug } }) {
               image: ord.pictures[0],
               title: ord.title,
               quantity: ord.quantity,
-              dispatched_quantity: ord.dispatched_quantity,
-              enquiry_status: ord.enquiry_status,
+              status: ord.status,
               available_quantity: ord.available_quantity,
               comment: ord.comment,
+              slug: ord.slug,
             }),
           );
       } catch (error) {
@@ -120,17 +114,7 @@ export default function Page({ params: { slug } }) {
   const onSubmit = (data) => {
     const payload = {
       status: data.status,
-      enquiry_status: data.enquiry_status,
-      order_type: data.order_type,
-      items: data.items.map((item) => {
-        if (item.enquiry_status !== "partially_available") {
-          return { ...item, available_quantity: null };
-        }
-        if (data.order_type === "order") {
-          return { ...item, comment: "" };
-        }
-        return item;
-      }),
+      items: data.items,
     };
     handleCreate(payload);
   };
@@ -138,6 +122,22 @@ export default function Page({ params: { slug } }) {
   async function handleCreate(data) {
     updateMutation.mutate({ ...data, order_id: slug });
   }
+
+  const convertToOrderMutation = useMutation(convertToOrder, {
+    onSuccess: (data) => {
+      toast.success(data?.message ?? "Coverted to order.");
+      queryClient.invalidateQueries("enquiries");
+      router.push("/customer/orders");
+    },
+    onError: (error) => {
+      console.log({ error });
+      toast.error(error.message);
+    },
+  });
+
+  const handleConvertToOrder = ({ id }) => {
+    convertToOrderMutation.mutate({ id });
+  };
 
   if (isLoading) {
     return <Spinner />;
@@ -173,16 +173,21 @@ export default function Page({ params: { slug } }) {
                   </TableCell>
 
                   {/* name */}
-                  <TableCell>{field.title}</TableCell>
+                  <TableCell>
+                    <Link
+                      href={`/products/${field.slug}`}
+                      className="transition-colors hover:text-primary"
+                    >
+                      {field.title}
+                    </Link>
+                  </TableCell>
 
                   {/* quantity */}
                   <TableCell>{getValues(`items.${key}.quantity`)}</TableCell>
 
                   {/* enquiry_status */}
                   <TableCell className="capitalize">
-                    {getValues(`items.${key}.enquiry_status`)
-                      ?.split("_")
-                      .join(" ")}
+                    {getValues(`items.${key}.status`)?.split("_").join(" ")}
                   </TableCell>
 
                   {/* available quantity */}
@@ -211,35 +216,15 @@ export default function Page({ params: { slug } }) {
             </TableBody>
           </Table>
 
-          <div className="my-6 grid grid-cols-1 gap-4">
-            <div>
-              <Label>Convert to order</Label>
-              <Controller
-                control={control}
-                rules={{ required: true }}
-                render={({ field: { value, onChange } }) => (
-                  <Select onValueChange={onChange} required value={value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Convert" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="order">Order</SelectItem>
-                      <SelectItem value="enquiry">Enquiry</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
-                name="order_type"
-              />
-              {errors?.order_type && (
-                <Small className={"text-red-500"}>
-                  {errors.order_type.message}
-                </Small>
-              )}
-            </div>
-          </div>
-
           {fields?.length > 0 && (
-            <div className="text-end">
+            <div className="flex items-center justify-between">
+              <Button
+                type="button"
+                variant="default"
+                onClick={() => handleConvertToOrder({ id: slug })}
+              >
+                Convert to order
+              </Button>
               <Button type="submit" variant="primary">
                 Submit query
               </Button>
