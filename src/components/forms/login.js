@@ -95,7 +95,7 @@ export default function LoginForm() {
           <div className="translate-y-4">
             <P className={"text-center text-sm font-medium tracking-wide"}>
               Do not have an account?{" "}
-              <Link href={"/signin"} className="text-primary">
+              <Link href={"/signup"} className="text-primary">
                 Create one
               </Link>
             </P>

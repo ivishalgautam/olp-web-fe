@@ -16,7 +16,7 @@ export default function Layout({ children }) {
   useEffect(() => {
     if (
       pathname === "/login" ||
-      pathname === "/signin" ||
+      pathname === "/signup" ||
       pathname === "/verify"
     ) {
       return;
@@ -37,6 +37,7 @@ export default function Layout({ children }) {
       currentRoute.roles.length &&
       (!currentRoute || !currentRoute?.roles?.includes(user?.role))
     ) {
+      localStorage.clear();
       router.replace("/login");
     }
   }, [pathname, user, isUserLoading]);

@@ -1,9 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { H1 } from "../ui/typography";
+import { H1, P } from "../ui/typography";
 import { Input } from "../ui/input";
-import { Label } from "@radix-ui/react-label";
 import { Button } from "../ui/button";
 import PhoneInput from "react-phone-number-input";
 import { useMutation } from "@tanstack/react-query";
@@ -12,16 +11,18 @@ import { endpoints } from "@/utils/endpoints";
 import { FaRegEye } from "react-icons/fa";
 import { toast } from "sonner";
 import ReactSelect from "react-select";
+import Link from "next/link";
 
 import "react-phone-number-input/style.css";
 import { useRouter } from "next/navigation";
 import { countries } from "@/data/countryCodes";
+import { Label } from "../ui/label";
 
 async function createCustomer(data) {
   return http().post(endpoints.users.getAll, data);
 }
 
-export function SignInForm() {
+export function SignUpForm() {
   const router = useRouter();
   const {
     register,
@@ -77,7 +78,7 @@ export function SignInForm() {
           <div className="space-y-4">
             {/* title */}
             <div className="">
-              <H1>Sign In</H1>
+              <H1>Sign Up</H1>
             </div>
 
             {/* product info */}
@@ -121,7 +122,7 @@ export function SignInForm() {
                     <div className="flex-1">
                       <Controller
                         control={control}
-                        rules={{ required: true }}
+                        rules={{ required: "required" }}
                         name="country_code"
                         render={({ field }) => (
                           <ReactSelect
@@ -135,6 +136,11 @@ export function SignInForm() {
                           />
                         )}
                       />
+                      {errors.country_code && (
+                        <span className="text-red-600">
+                          {errors.country_code.message}
+                        </span>
+                      )}
                     </div>
                     <div className="flex-3">
                       <Input
@@ -143,13 +149,13 @@ export function SignInForm() {
                         })}
                         placeholder="Enter mobile number"
                       />
+                      {errors.mobile_number && (
+                        <span className="text-red-600">
+                          {errors.mobile_number.message}
+                        </span>
+                      )}
                     </div>
                   </div>
-                  {errors.mobile_number && (
-                    <span className="text-red-600">
-                      {errors.mobile_number.message}
-                    </span>
-                  )}
                 </div>
                 {/* email */}
                 <div>
@@ -260,6 +266,15 @@ export function SignInForm() {
           {/* submit */}
           <div className="text-right">
             <Button variant={"primary"}>Register</Button>
+          </div>
+
+          <div className="translate-y-4">
+            <P className={"text-center text-sm font-medium tracking-wide"}>
+              Already have an account?{" "}
+              <Link href={"/login"} className="text-primary">
+                Login
+              </Link>
+            </P>
           </div>
         </div>
       </div>
